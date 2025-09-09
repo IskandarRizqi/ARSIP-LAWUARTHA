@@ -38,7 +38,7 @@
                             <div id="form_digital" style="display: none;">
                                 <div class="row">
                                     <!-- Kolom Upload File (8 Kolom) -->
-                                    <div class="col-lg-8">
+                                    <div class="col-lg-12">
                                         <label for="file">Upload File (PDF Only)</label>
                                         <div class="upload-container" style="text-align: center; padding: 20px; border: 2px dashed #0b75e6; border-radius: 10px; position: relative; cursor: pointer;">
                                             <input type="hidden" name="idarsip" value="">
@@ -57,7 +57,7 @@
                                         </div>
                                     </div>
                                 
-                                    <!-- Kolom Input Kode Arsip (4 Kolom) -->
+                                    {{-- <!-- Kolom Input Kode Arsip (4 Kolom) -->
                                     <div class="col-lg-4">
                                         <label for="no">Size File ( Mb )</label>
                                         <div class="form-group">
@@ -65,7 +65,7 @@
                                                 <input type="number" name="size" id="size" class="form-control" placeholder="Masukkan dalam bentuk Mb">
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 
                                 <br>

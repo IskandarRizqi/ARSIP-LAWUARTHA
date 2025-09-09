@@ -291,15 +291,16 @@
                                         <div class="form-group">
                                             <div class="form-line">
 
-                                                <select id="rak_fisik" name="rak" class="form-control">
+                                               <select id="rak_fisik" name="rak" class="form-control">
                                                     <option value="">-- Pilih Rak --</option>
                                                     <option value="1">1</option>
                                                     <option value="2">2</option>
-                                                    <option value="1">3</option>
-                                                    <option value="2">4</option>
-                                                    <option value="1">5</option>
-                                                    <option value="2">6</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                    <option value="6">6</option>
                                                 </select>
+
                                             </div>
                                         </div> 
                                     </div>

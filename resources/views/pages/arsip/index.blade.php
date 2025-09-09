@@ -68,6 +68,7 @@
                                         <tr>
                                             <th>No</th>
                                             <th>Waktu Upload</th>
+                                            <th>jenis File</th>
                                             <th>Arsip</th>
                                             <th>Kategori</th>
                                             <th>Sub Kategori</th>
@@ -83,7 +84,7 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ \Carbon\Carbon::parse($value->created_at)->format('d M Y H:i') }}</td>
-
+                                            <td>{{$value->jenis_file}}</td>
                                             <td>
                                                 Arsip : {{$value->nama}} <br>
                                                 Kode  : {{$value->kode}}        
@@ -104,23 +105,31 @@
                                                         <i class="fa fa-cog"></i> <!-- Ikon Settings -->
                                                     </a>
                                             
-                                                    <!-- Dropdown Menu -->
                                                     <div class="dropdown-menu" aria-labelledby="fileActionMenu{{ $value->id }}" style="min-width: 90px; padding-left: 10px;">
-                                                        <a href="{{ asset('storage/'.$value->file) }}" style="color: black; font-size: 14px; display: block; padding: 5px 0;">Preview</a>
-                                                        <a href="{{ asset('storage/'.$value->file) }}" download style="color: black; font-size: 14px; display: block; padding: 5px 0;">Download</a>
-                                                        <a href="{{ route('menuarsip.show', $value->id) }}" style="color: black; font-size: 14px; display: block; padding: 5px 0;">Edit</a>
-                                                       <!-- Tombol Hapus -->
-                                                       <form action="{{ route('menuarsip.destroy', $value->id) }}" method="post" class="delete-form" style="margin: 0; padding: 0; display: inline;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-link show_confirm" style="color: black; font-size: 14px; display: block; padding: 5px 0; border: none; background: none;">
-                                                            Hapus
-                                                        </button>
-                                                    </form>
-
+                                                        @if($value->jenis_file === 'fisik')
+                                                            <!-- Hanya Edit & Hapus -->
+                                                            <a href="{{ route('menuarsip.show', $value->id) }}" style="color: black; font-size: 14px; display: block; padding: 5px 0;">Edit</a>
+                                                            <form action="{{ route('menuarsip.destroy', $value->id) }}" method="post" class="delete-form" style="margin: 0; padding: 0; display: inline;">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-link show_confirm" style="color: black; font-size: 14px; display: block; padding: 5px 0; border: none; background: none;">
+                                                                    Hapus
+                                                                </button>
+                                                            </form>
+                                                        @else
+                                                            <!-- Preview, Download, Edit, Hapus -->
+                                                            <a href="{{ asset('storage/'.$value->file) }}" style="color: black; font-size: 14px; display: block; padding: 5px 0;">Preview</a>
+                                                            <a href="{{ asset('storage/'.$value->file) }}" download style="color: black; font-size: 14px; display: block; padding: 5px 0;">Download</a>
+                                                            <a href="{{ route('menuarsip.show', $value->id) }}" style="color: black; font-size: 14px; display: block; padding: 5px 0;">Edit</a>
+                                                            <form action="{{ route('menuarsip.destroy', $value->id) }}" method="post" class="delete-form" style="margin: 0; padding: 0; display: inline;">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-link show_confirm" style="color: black; font-size: 14px; display: block; padding: 5px 0; border: none; background: none;">
+                                                                    Hapus
+                                                                </button>
+                                                            </form>
+                                                        @endif
                                                     </div>
-                                                    
-                                                    
                                                 </div>
                                             </td>                                          
                                             

@@ -109,7 +109,7 @@ Route::put('/approvals/{id}/approve', [PengajuanController::class, 'approve'])->
 
 Route::get('/preview/{id}', [PengajuanController::class, 'preview'])->name('preview.pdf');
 
-Route::get('/profile', [UserController::class, 'showprofile'])->name('profile.showprofile');
+Route::get('/profile', [UserController::class, 'shoswprofile'])->name('profile.showprofile');
 Route::put('/profile/update', [UserController::class, 'updateProfile'])->name('profile.update');
 
 Route::get('/comingsoon', function () {
