@@ -24,7 +24,7 @@ class ArsipController extends Controller
             'kategori.nama as kategori_nama',  // Nama kategori
             'subkategori.nama as subkategori_nama' // Nama subkategori
         )
-        ->where('arsip.jenis_file', 'digital')
+        // ->where('arsip.jenis_file', 'digital')
         ->orderBy('arsip.created_at', 'desc')
         ->get();
 
@@ -63,8 +63,7 @@ class ArsipController extends Controller
     if ($request->jenis_file === 'digital') {
         // Validasi untuk file PDF dengan maksimal 150MB
         $request->validate([
-            'file' => 'required|file|mimes:pdf|max:150000',
-            'size' => 'required|numeric',
+           'file' => 'required|file|mimes:pdf|max:153600', // 150 MB = 153600 KB
             'kode' => 'required',
             'nama' => 'required',
             'subkategori' => 'required|exists:subkategori,id',
@@ -72,9 +71,10 @@ class ArsipController extends Controller
         ]);
 
         // Simpan file ke storage jika ada
-        if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store('uploads', 'public');
-            $fileSizeInBytes = $request->size * 1024; // Konversi dari KB ke Byte
+       if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+            $fileSizeInBytes = $file->getSize(); // otomatis ambil ukuran file dalam byte
         } else {
             return back()->withErrors(['file' => 'File wajib diunggah']);
         }
@@ -157,28 +157,30 @@ public function show(string $id)
         if ($arsip->jenis_file === 'digital') {
             // Validasi untuk file digital
             $request->validate([
-                'file' => 'nullable|file|mimes:pdf|max:150000', // PDF max 150MB
-                'size' => 'required|numeric',
+                'file' => 'nullable|file|mimes:pdf|max:153600', // PDF max 150MB
                 'kode' => 'required|string|max:255',
                 'nama' => 'required|string|max:255',
                 'subkategori' => 'required|exists:subkategori,id',
                 'deskripsi' => 'required|string',
             ]);
     
-            // Cek apakah ada file baru yang diunggah
-            if ($request->hasFile('file')) {
-                // Hapus file lama jika ada
-                if ($arsip->file) {
-                    Storage::delete('public/' . $arsip->file);
-                }
-    
-                // Simpan file baru
-                $filePath = $request->file('file')->store('uploads', 'public');
-                $arsip->file = $filePath;
+           // Jika ada file baru
+        if ($request->hasFile('file')) {
+            // Hapus file lama jika ada
+            if ($arsip->file && Storage::exists('public/' . $arsip->file)) {
+                Storage::delete('public/' . $arsip->file);
             }
+
+            // Simpan file baru
+            $file = $request->file('file');
+            $filePath = $file->store('uploads', 'public');
+
+            // Update file path & size
+            $arsip->file = $filePath;
+            $arsip->size = $file->getSize(); // byte
+        }
     
-            // Update data arsip digital
-            $arsip->size = $request->size * 1024; // Konversi MB ke KB
+            // Update data arsip digital 
             $arsip->kode = $request->kode;
             $arsip->nama = $request->nama;
             $arsip->subkategori = $request->subkategori;
@@ -187,12 +189,12 @@ public function show(string $id)
         elseif ($arsip->jenis_file === 'fisik') {
             // Validasi untuk arsip fisik
             $request->validate([
-                'nama' => 'required|string|max:255',
-                'lemari' => 'required|string',
-                'rak' => 'required|string',
-                'no' => 'required|string',
-                'subkategori' => 'required|exists:subkategori,id',
-                'deskripsi' => 'required|string',
+                'namaxxx' => 'required',
+                'lemari' => 'required',
+                'rak' => 'required',
+                'no' => 'required',
+                'subkategorixxx' => 'required|exists:subkategori,id',
+                'deskripsixxx' => 'required',
             ]);
     
             // Update data arsip fisik
@@ -209,11 +211,8 @@ public function show(string $id)
     
         return redirect()->route('menuarsip.index')->with('success', 'Arsip berhasil diperbarui!');
     }
-    
-    
-    
 
-    
+
     public function destroy(string $id)
         {
 

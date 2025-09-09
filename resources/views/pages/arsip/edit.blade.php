@@ -15,9 +15,10 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="card">
                     <div class="body">
-                        <form action="{{ route('menuarsip.update', $edit->id) }}" method="POST">
+                        <form action="{{ route('menuarsip.update', $edit->id) }}" method="POST"  enctype="multipart/form-data">
                             @csrf
                             @method('PUT') <!-- Gunakan PUT untuk update data -->
+                            
 
                             <!-- Pilihan Digital / Fisik -->
                             <div class="form-group text-center">
@@ -39,36 +40,40 @@
                             <div id="form_digital" style="display: none;">
                                 <div class="row">
                                     <!-- Kolom Upload File (8 Kolom) -->
-                                    <div class="col-lg-8">
-                                        <label for="file">Upload File (PDF Only)</label>
-                                        <div class="upload-container" style="text-align: center; padding: 20px; border: 2px dashed #0b75e6; border-radius: 10px; position: relative; cursor: pointer;">
-                                            <input type="hidden" name="idarsip" value="">
-                                            <input type="file" name="file" id="file" class="file-input" accept="application/pdf"
-                                                style="opacity: 0; position: absolute; width: 100%; height: 100%; top: 0; left: 0;" 
-                                                onchange="validateAndPreviewFile(event)"> value="{{ $edit->file }}" required
-                                            
-                                            <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 40px; color: #aaa;">
-                                                <i class="material-icons">touch_app</i>
-                                            </span>
-                                
-                                            <!-- File Preview -->
-                                            <div id="filePreview" style="margin-top: 20px; display: none;">
-                                                <p id="fileName" style="font-size: 16px; color: #333;"></p>
-                                            </div>
+                                   <div class="col-lg-12">
+                                    <label for="file">Upload File (PDF Only)</label>
+
+                                    {{-- Tombol Lihat File Lama --}}
+                                    @if($edit->file)
+                                        <div style="margin-bottom:10px;">
+                                            <a href="{{ asset('storage/' . $edit->file) }}" target="_blank" 
+                                            class="btn btn-sm btn-primary">
+                                                <i class="material-icons" style="vertical-align: middle;">picture_as_pdf</i>
+                                                Lihat Dokumen Lama
+                                            </a>
+                                        </div>
+                                    @endif
+
+                                    <div class="upload-container" 
+                                        style="text-align: center; padding: 20px; border: 2px dashed #0b75e6; border-radius: 10px; cursor: pointer; position:relative;">
+                                        
+                                        <input type="file" name="file" id="file" accept="application/pdf"
+                                            style="opacity:0; position:absolute; width:100%; height:100%; top:0; left:0;"
+                                            onchange="validateAndPreviewFile(event)">
+
+                                        <span style="font-size:40px; color:#aaa;">
+                                            <i class="material-icons">touch_app</i>
+                                        </span>
+
+                                        <!-- Preview file baru -->
+                                        <div id="filePreview" style="margin-top: 20px; display: none;">
+                                            <p id="fileName" style="font-size: 16px; color: #333;"></p>
                                         </div>
                                     </div>
-                                
-                                    <!-- Kolom Input Kode Arsip (4 Kolom) -->
-                                    <!-- Kolom Input Kode Arsip (4 Kolom) -->
-                                    <div class="col-lg-4">
-                                        <label for="no">Size File (MB)</label>
-                                        <div class="form-group">
-                                            <div class="form-line">
-                                                <input type="number" name="size" id="size" class="form-control" placeholder="Masukkan dalam bentuk MB"
-                                                value="{{ old('size', isset($edit) ? number_format($edit->size / 1024, 2) : '') }}">
-                                            </div>
-                                        </div>
-                                    </div>
+                                </div>
+
+                                                        
+                                                            
 
                                 </div>
                                 
@@ -78,7 +83,7 @@
                                 <div class="form-group">
                                     <div class="form-line">
                                         <input type="text" name="kode" id="kode" class="form-control" placeholder="Masukan Nama Kategori"
-                                        value="{{ $edit->kode }}" required>
+                                        value="{{ $edit->kode }}" >
                                     </div>
                                 </div>
 
@@ -122,7 +127,7 @@
                                 <div class="form-group">
                                     <div class="form-line">
                                         <input type="text" name="namaxxx" id="nama_fisik" class="form-control" placeholder="Masukkan Nama Arsip"
-                                        value="{{ $edit->namaxxx }}">
+                                        value="{{ $edit->nama}}">
                                     </div>
                                 </div>
 
@@ -132,9 +137,10 @@
                                         <div class="form-group">
                                             <div class="form-line">
                                                 <select id="lemari_fisik" name="lemari" class="form-control">
-                                                    <option  value="{{ $edit->lemari }}">-- Pilih --</option>
+                                                    <option value="">-- Pilih --</option>
                                                     @foreach($lemari as $v) 
-                                                        <option value="{{ $v->id }}" {{ old('lemari') == $v->id ? 'selected' : '' }}>
+                                                        <option value="{{ $v->id }}" 
+                                                            {{ (old('lemari', $edit->lemari) == $v->id) ? 'selected' : '' }}>
                                                             {{ $v->nama }}
                                                         </option>
                                                     @endforeach
@@ -148,15 +154,15 @@
                                         <div class="form-group">
                                             <div class="form-line">
 
-                                                <select id="rak_fisik" name="rak" class="form-control" value="{{ $edit->rak }}">
+                                                <select id="rak_fisik" name="rak" class="form-control">
                                                     <option value="">-- Pilih Rak --</option>
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="1">3</option>
-                                                    <option value="2">4</option>
-                                                    <option value="1">5</option>
-                                                    <option value="2">6</option>
+                                                    @for($i=1; $i<=6; $i++)
+                                                        <option value="{{ $i }}" {{ (old('rak', $edit->rak) == $i) ? 'selected' : '' }}>
+                                                            {{ $i }}
+                                                        </option>
+                                                    @endfor
                                                 </select>
+
                                             </div>
                                         </div> 
                                     </div>
@@ -172,26 +178,25 @@
                                     </div>
                                 </div>
     
-                                
 
-                                <label for="subkategori">Kategori</label>
+                                 <label for="subkategori">Kategori</label>
                                 <div class="form-group">
                                     <div class="form-line">
-                                        <select id="subkategori" name="subkategori" class="form-control" >
+                                        <select id="subkategori" name="subkategorixxx" class="form-control">
                                             <option value="">-- Pilih Kategori --</option>
                                             @foreach($subkategori as $k) 
-                                                <option value="{{ $k->id }}">{{ $k->namakategori }} - {{ $k->subnama }}</option>
+                                                <option value="{{ $k->id }}" 
+                                                    {{ isset($edit) && $edit->subkategori_id == $k->id ? 'selected' : '' }}>
+                                                    {{ $k->kategori_nama }} - {{ $k->nama }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
                                 
-                                
-
                                 <label for="deskripsi">Keterangan</label>
                                 <div class="form-line">
-                                    <textarea id="deskripsi_fisik" name="deskripsixxx" cols="30" rows="5" class="form-control no-resize" 
-                                    deskripsixxx></textarea>
+                                    <textarea name="deskripsixxx" id="deskripsi_fisik" cols="30" rows="5" class="form-control no-resize">{{ old('deskripsi', $edit->deskripsi) }}</textarea>
                                 </div>
                             </div>
 

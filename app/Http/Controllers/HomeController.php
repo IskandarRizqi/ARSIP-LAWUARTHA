@@ -45,8 +45,14 @@ class HomeController extends Controller
         // Pastikan array memiliki nilai untuk semua bulan (1-12)
         $formattedData = [];
         for ($i = 1; $i <= 12; $i++) {
-            $formattedData[] = isset($storagePerMonth[$i]) ? round($storagePerMonth[$i] / 1024, 2) : 0; // Konversi ke MB
+            // Kalau DB simpan dalam KB, maka butuh /1024 dua kali (KB -> MB -> GB)
+            $formattedData[] = isset($storagePerMonth[$i]) 
+                ? round(($storagePerMonth[$i] / 1024) / 1024, 1) 
+                : 0;
         }
+
+        
+
         
 
         $fileTerbesar = ArsipModel::whereNotNull('size')

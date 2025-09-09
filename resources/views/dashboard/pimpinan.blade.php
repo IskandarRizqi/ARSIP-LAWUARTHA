@@ -128,7 +128,7 @@
                             <ul class="dashboard-stat-list">
                                 @foreach($fileTerbesar as $file)
                                 <li>
-                                    {{ $file->nama }} - {{ number_format($file->size / 1024, 2, ',', '.') }} MB
+                                    {{ $file->nama }} - {{ number_format(($file->size / 1024) / 1024, 2, ',', '.') }} MB
                                     <span class="pull-right">
                                         <i class="material-icons">trending_up</i>
                                     </span>
@@ -186,7 +186,7 @@
         </div>
     </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var ctx = document.getElementById('storageChart').getContext('2d');
@@ -213,7 +213,7 @@
                 }
             });
         });
-    </script>
+    </script> --}}
 
 <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 <script>
@@ -287,13 +287,14 @@
                 }
             },
             plugins: {
-                tooltip: {
+              tooltip: {
                     callbacks: {
                         label: function(tooltipItem) {
-                            return `Total Storage per Bulan: ${tooltipItem.raw} MB`; // Tambahkan "MB" di tooltip
+                            return `Total Storage per Bulan: ${tooltipItem.raw} MB`;
                         }
                     }
                 }
+
             }
         }
     });
